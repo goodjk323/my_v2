@@ -831,25 +831,66 @@ installBBR() {
 }
 
 installV2ray() {
-    rm -rf /tmp/v2ray
-    mkdir -p /tmp/v2ray
-    DOWNLOAD_LINK="${V6_PROXY}https://github.com/v2fly/v2ray-core/releases/download/${NEW_VER}/v2ray-linux-$(archAffix).zip"
-    colorEcho $BLUE " 下载V2Ray: ${DOWNLOAD_LINK}"
-    curl -L -H "Cache-Control: no-cache" -o /tmp/v2ray/v2ray.zip ${DOWNLOAD_LINK}
-    if [ $? != 0 ];then
-        colorEcho $RED " 下载V2ray文件失败，请检查服务器网络设置"
+    #rm -rf /tmp/v2ray
+    #mkdir -p /tmp/v2ray
+    #DOWNLOAD_LINK="${V6_PROXY}https://github.com/v2fly/v2ray-core/releases/download/${NEW_VER}/v2ray-linux-$(archAffix).zip"
+    #colorEcho $BLUE " 下载V2Ray: ${DOWNLOAD_LINK}"
+    #curl -L -H "Cache-Control: no-cache" -o /tmp/v2ray/v2ray.zip ${DOWNLOAD_LINK}
+    #if [ $? != 0 ];then
+    #    colorEcho $RED " 下载V2ray文件失败，请检查服务器网络设置"
+    #    exit 1
+    #fi
+    #mkdir -p '/etc/v2ray' '/var/log/v2ray' && \
+    #unzip /tmp/v2ray/v2ray.zip -d /tmp/v2ray
+    #mkdir -p /usr/bin/v2ray
+    #cp /tmp/v2ray/v2ctl /usr/bin/v2ray/; cp /tmp/v2ray/v2ray /usr/bin/v2ray/; cp /tmp/v2ray/geo* /usr/bin/v2ray/;
+    #cp /tmp/v2ray/v2ray /usr/bin/v2ray/; cp /tmp/v2ray/geo* /usr/bin/v2ray/;
+   # #chmod +x '/usr/bin/v2ray/v2ray' '/usr/bin/v2ray/v2ctl' || {
+  #  chmod +x '/usr/bin/v2ray/v2ray' || {
+ #       colorEcho $RED " V2ray安装失败"
+#        exit 1
+#    }
+    echo 安装v2ray...
+    bash <(curl -L -s https://raw.githubusercontent.com/goodjk323/my_v2/main/go.sh)
+
+    if [ ! -f /etc/v2ray/config.json ]; then
+        bash <(curl -sL https://raw.githubusercontent.com/goodjk323/my_v2/main/goV2.sh)
+        if [ ! -f /etc/v2ray/config.json ]; then
+            echo "安装失败，请到 https://www.hijk.pw 网站反馈"
+            exit 1
+        fi
+    fi
+
+    logsetting=`cat /etc/v2ray/config.json|grep loglevel`
+    if [ "${logsetting}" = "" ]; then
+        sed -i '1a\  "log": {\n    "loglevel": "info",\n    "access": "/var/log/v2ray/access.log",\n    "error": "/var/log/v2ray/error.log"\n  },' /etc/v2ray/config.json
+    fi
+    alterid=`shuf -i50-90 -n1`
+    sed -i -e "s/alterId\":.*[0-9]*/alterId\": ${alterid}/" /etc/v2ray/config.json
+    uid=`cat /etc/v2ray/config.json | grep id | cut -d: -f2 | tr -d \",' '`
+    v2port=`cat /etc/v2ray/config.json | grep port | cut -d: -f2 | tr -d \",' '`
+    ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+    ntpdate -u time.nist.gov
+    res=`cat /etc/v2ray/config.json | grep streamSettings`
+    if [ "$res" = "" ]; then
+        line=`grep -n '}]' /etc/v2ray/config.json  | head -n1 | cut -d: -f1`
+        line=`expr ${line} - 1`
+        sed -i "${line}s/}/},/" /etc/v2ray/config.json
+        sed -i "${line}a\    \"streamSettings\": {\n      \"network\": \"ws\",\n      \"wsSettings\": {\n        \"path\": \"${path}\",\n        \"headers\": {\n          \"Host\": \"${domain}\"\n        }\n      }\n    },\n    \"listen\": \"127.0.0.1\"" /etc/v2ray/config.json
+    else
+        sed -i -e "s/path\":.*/path\": \"\\${path}\",/" /etc/v2ray/config.json
+    fi
+    systemctl enable v2ray && systemctl restart v2ray
+    sleep 3
+    res=`netstat -nltp | grep ${v2port} | grep v2ray`
+    if [ "${res}" = "" ]; then
+        echo "v2ray启动失败，请检查端口是否被占用或伪装路径是否有特殊字符！"
         exit 1
     fi
-    mkdir -p '/etc/v2ray' '/var/log/v2ray' && \
-    unzip /tmp/v2ray/v2ray.zip -d /tmp/v2ray
-    mkdir -p /usr/bin/v2ray
-    #cp /tmp/v2ray/v2ctl /usr/bin/v2ray/; cp /tmp/v2ray/v2ray /usr/bin/v2ray/; cp /tmp/v2ray/geo* /usr/bin/v2ray/;
-    cp /tmp/v2ray/v2ray /usr/bin/v2ray/; cp /tmp/v2ray/geo* /usr/bin/v2ray/;
-    #chmod +x '/usr/bin/v2ray/v2ray' '/usr/bin/v2ray/v2ctl' || {
-    chmod +x '/usr/bin/v2ray/v2ray' || {
-        colorEcho $RED " V2ray安装失败"
-        exit 1
-    }
+    echo "v2ray安装成功！"
+}
+
+
 
     cat >$SERVICE_FILE<<-EOF
 [Unit]
