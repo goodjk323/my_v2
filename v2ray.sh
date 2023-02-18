@@ -37,10 +37,10 @@ SERVICE_FILE="/etc/systemd/system/v2ray.service"
 OS=`hostnamectl | grep -i system | cut -d: -f2`
 
 V6_PROXY=""
-IP=`curl -sL -4 icanhazip.com` #ip.sb`
+IP=`curl -sL -4 icanhazip.com` #ip.sb
  #IP=`curl -s -4 icanhazip.com` bak
 if [[ "$?" != "0" ]]; then
-    IP=`curl -sL -6 icanhazip.com` #ip.sb`
+    IP=`curl -sL -6 icanhazip.com` #ip.sb
     V6_PROXY="https://gh.hijk.art/"
 fi
 
@@ -277,11 +277,17 @@ getData() {
         else
             #resolve=`curl -sL https://hijk.art/hostip.php?d=${DOMAIN}`
             resolve=`host ${domain}`
-            res=`echo -n ${resolve} | grep ${IP}`
-            if [[ -z "${res}" ]]; then
-                colorEcho ${BLUE}  "${DOMAIN} 解析结果：${resolve}"
-                colorEcho ${RED}  " 域名未解析到当前服务器IP(${IP})!"
-                exit 1
+	    res=`echo -n ${resolve} | grep ${IP}`
+    if [ -z "${res}" ]; then
+        echo -n "${domain} 解析结果："
+        host ${domain}
+        echo "主机未解析到当前服务器IP(${IP})!"
+        exit 1
+   #         res=`echo -n ${resolve} | grep ${IP}`
+   #         if [[ -z "${res}" ]]; then
+   #             colorEcho ${BLUE}  "${DOMAIN} 解析结果：${resolve}"
+   #             colorEcho ${RED}  " 域名未解析到当前服务器IP(${IP})!"
+   #             exit 1
             fi
 			#此处需注释掉
         fi
