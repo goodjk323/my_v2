@@ -283,6 +283,9 @@ getData() {
     #    host ${domain}
    #     echo "主机未解析到当前服务器IP(${IP})!"
    #     exit 1
+   
+   
+   
    #         res=`echo -n ${resolve} | grep ${IP}`
    #         if [[ -z "${res}" ]]; then
    #             colorEcho ${BLUE}  "${DOMAIN} 解析结果：${resolve}"
