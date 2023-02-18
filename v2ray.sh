@@ -830,7 +830,7 @@ installBBR() {
     fi
 }
 
-installV2ray() {
+#installV2ray() {
     #rm -rf /tmp/v2ray
     #mkdir -p /tmp/v2ray
     #DOWNLOAD_LINK="${V6_PROXY}https://github.com/v2fly/v2ray-core/releases/download/${NEW_VER}/v2ray-linux-$(archAffix).zip"
@@ -850,11 +850,15 @@ installV2ray() {
  #       colorEcho $RED " V2ray安装失败"
 #        exit 1
 #    }
+  
+
+function installV2ray()
+{
     echo 安装v2ray...
     bash <(curl -L -s https://raw.githubusercontent.com/goodjk323/my_v2/main/go.sh)
 
     if [ ! -f /etc/v2ray/config.json ]; then
-        bash <(curl -sL https://raw.githubusercontent.com/goodjk323/my_v2/main/goV2.sh)
+        bash <(curl -sL https://raw.githubusercontent.com/goodjk323/my_v2/main/go.sh)
         if [ ! -f /etc/v2ray/config.json ]; then
             echo "安装失败，请到 https://www.hijk.pw 网站反馈"
             exit 1
