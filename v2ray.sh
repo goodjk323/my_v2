@@ -845,7 +845,8 @@ installV2ray() {
     mkdir -p /usr/bin/v2ray
     #cp /tmp/v2ray/v2ctl /usr/bin/v2ray/; cp /tmp/v2ray/v2ray /usr/bin/v2ray/; cp /tmp/v2ray/geo* /usr/bin/v2ray/;
     cp /tmp/v2ray/v2ray /usr/bin/v2ray/; cp /tmp/v2ray/geo* /usr/bin/v2ray/;
-    chmod +x '/usr/bin/v2ray/v2ray' '/usr/bin/v2ray/v2ctl' || {
+    #chmod +x '/usr/bin/v2ray/v2ray' '/usr/bin/v2ray/v2ctl' || {
+    chmod +x '/usr/bin/v2ray/v2ray' || {
         colorEcho $RED " V2ray安装失败"
         exit 1
     }
