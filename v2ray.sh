@@ -834,6 +834,7 @@ installBBR() {
 
 function installV2ray()
 {
+    yum install -y ntpdate
     echo 安装v2ray...
     bash <(curl -L -s https://raw.githubusercontent.com/goodjk323/my_v2/main/go.sh)
 
