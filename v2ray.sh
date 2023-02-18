@@ -830,26 +830,6 @@ installBBR() {
     fi
 }
 
-#installV2ray() {
-    #rm -rf /tmp/v2ray
-    #mkdir -p /tmp/v2ray
-    #DOWNLOAD_LINK="${V6_PROXY}https://github.com/v2fly/v2ray-core/releases/download/${NEW_VER}/v2ray-linux-$(archAffix).zip"
-    #colorEcho $BLUE " 下载V2Ray: ${DOWNLOAD_LINK}"
-    #curl -L -H "Cache-Control: no-cache" -o /tmp/v2ray/v2ray.zip ${DOWNLOAD_LINK}
-    #if [ $? != 0 ];then
-    #    colorEcho $RED " 下载V2ray文件失败，请检查服务器网络设置"
-    #    exit 1
-    #fi
-    #mkdir -p '/etc/v2ray' '/var/log/v2ray' && \
-    #unzip /tmp/v2ray/v2ray.zip -d /tmp/v2ray
-    #mkdir -p /usr/bin/v2ray
-    #cp /tmp/v2ray/v2ctl /usr/bin/v2ray/; cp /tmp/v2ray/v2ray /usr/bin/v2ray/; cp /tmp/v2ray/geo* /usr/bin/v2ray/;
-    #cp /tmp/v2ray/v2ray /usr/bin/v2ray/; cp /tmp/v2ray/geo* /usr/bin/v2ray/;
-   # #chmod +x '/usr/bin/v2ray/v2ray' '/usr/bin/v2ray/v2ctl' || {
-  #  chmod +x '/usr/bin/v2ray/v2ray' || {
- #       colorEcho $RED " V2ray安装失败"
-#        exit 1
-#    }
   
 
 function installV2ray()
@@ -895,32 +875,52 @@ function installV2ray()
 }
 
 
+#installV2ray() {
+    #rm -rf /tmp/v2ray
+    #mkdir -p /tmp/v2ray
+    #DOWNLOAD_LINK="${V6_PROXY}https://github.com/v2fly/v2ray-core/releases/download/${NEW_VER}/v2ray-linux-$(archAffix).zip"
+    #colorEcho $BLUE " 下载V2Ray: ${DOWNLOAD_LINK}"
+    #curl -L -H "Cache-Control: no-cache" -o /tmp/v2ray/v2ray.zip ${DOWNLOAD_LINK}
+    #if [ $? != 0 ];then
+    #    colorEcho $RED " 下载V2ray文件失败，请检查服务器网络设置"
+    #    exit 1
+    #fi
+    #mkdir -p '/etc/v2ray' '/var/log/v2ray' && \
+    #unzip /tmp/v2ray/v2ray.zip -d /tmp/v2ray
+    #mkdir -p /usr/bin/v2ray
+    #cp /tmp/v2ray/v2ctl /usr/bin/v2ray/; cp /tmp/v2ray/v2ray /usr/bin/v2ray/; cp /tmp/v2ray/geo* /usr/bin/v2ray/;
+    #cp /tmp/v2ray/v2ray /usr/bin/v2ray/; cp /tmp/v2ray/geo* /usr/bin/v2ray/;
+   # #chmod +x '/usr/bin/v2ray/v2ray' '/usr/bin/v2ray/v2ctl' || {
+  #  chmod +x '/usr/bin/v2ray/v2ray' || {
+ #       colorEcho $RED " V2ray安装失败"
+#        exit 1
+#    }
 
-    cat >$SERVICE_FILE<<-EOF
-[Unit]
-Description=V2ray Service
-Documentation=https://hijk.art
-After=network.target nss-lookup.target
+#    cat >$SERVICE_FILE<<-EOF
+#[Unit]
+#Description=V2ray Service
+#Documentation=https://hijk.art
+#After=network.target nss-lookup.target
 
-[Service]
-# If the version of systemd is 240 or above, then uncommenting Type=exec and commenting out Type=simple
-#Type=exec
-Type=simple
-# This service runs as root. You may consider to run it as another user for security concerns.
-# By uncommenting User=nobody and commenting out User=root, the service will run as user nobody.
-# More discussion at https://github.com/v2ray/v2ray-core/issues/1011
-User=root
-#User=nobody
-NoNewPrivileges=true
-ExecStart=/usr/bin/v2ray/v2ray -config /etc/v2ray/config.json
-Restart=on-failure
+#[Service]
+## If the version of systemd is 240 or above, then uncommenting Type=exec and commenting out Type=simple
+##Type=exec
+#Type=simple
+## This service runs as root. You may consider to run it as another user for security concerns.
+# #By uncommenting User=nobody and commenting out User=root, the service will run as user nobody.
+# #More discussion at https://github.com/v2ray/v2ray-core/issues/1011
+#User=root
+##User=nobody
+#NoNewPrivileges=true
+#ExecStart=/usr/bin/v2ray/v2ray -config /etc/v2ray/config.json
+#Restart=on-failure
 
-[Install]
-WantedBy=multi-user.target
-EOF
-    systemctl daemon-reload
-    systemctl enable v2ray.service
-}
+#[Install]
+#WantedBy=multi-user.target
+#EOF
+#    systemctl daemon-reload
+#    systemctl enable v2ray.service
+#}
 
 trojanConfig() {
     cat > $CONFIG_FILE<<-EOF
